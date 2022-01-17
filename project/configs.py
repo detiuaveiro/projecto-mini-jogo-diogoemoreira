@@ -26,3 +26,4 @@ class Configurations:
         with open('configurations.dat', 'rb') as f:
             self._keys = pickle.load(f)
 
+Configurations().save_configs()

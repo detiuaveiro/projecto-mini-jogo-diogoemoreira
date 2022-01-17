@@ -1,7 +1,9 @@
 import pygame
 
-from input_handler import *
 from player import Player
+from enemy import Emu
+from game_manager import GameManager
+from floor import Floor
 
 UPDATE = pygame.event.custom_type()
 SCALE = 10
@@ -9,20 +11,27 @@ HEIGHT = 40
 WIDTH = 80
 
 class Game:
-    def __init__(self):
+    def __init__(self, floor_dic:dict):
         self.display = pygame.display.set_mode((SCALE * WIDTH, SCALE * HEIGHT)) #create the display for the game
         self.clock = pygame.time.Clock() #start counting for game frames
-        self.command = InputHandler()
+        #self.command = InputHandler()
 
-        self.player = Player(SCALE)
+        self.floor = floor_dic
+        self.player = Player(SCALE, HEIGHT, WIDTH)
+        self.enemy = Emu(SCALE)
         self.enemies = []
+        self.enemies.append(self.enemy.clone(self.enemy.x + 2, self.enemy.y + 1))
         self.eggs = []
         self.food = []
+        
+        self.game_manager = GameManager(SCALE, self.floor)
+
+        self.game_manager.add_observer(self.player)
 
     def loop(self):
         running = True
 
-        pygame.time.set_timer(UPDATE, 30)
+        pygame.time.set_timer(UPDATE, 45)
 
         #Event handler
         while running:
@@ -34,18 +43,26 @@ class Game:
                 
                 if event.type == pygame.QUIT:
                     running = False
+                    break
+
                 elif event.type == pygame.KEYDOWN: #if the player pressed a key
                     if event.key == pygame.K_UP:
-                        self.command.handleInput("up")
+                        self.player.up()
                     elif event.key == pygame.K_DOWN:
-                        self.command.handleInput("down")
+                        self.player.down()
                     elif event.key == pygame.K_LEFT:
-                        self.command.handleInput("left")
+                        self.player.left()
                     elif event.key == pygame.K_RIGHT:
-                        self.command.handleInput("right")
+                        self.player.right()
                     elif event.key == pygame.K_SPACE:
-                        self.command.handleInput("space")
+                        self.player.jump()
                 elif event.type == UPDATE:
+                    if not self.game_manager.floor_collide(self.player):
+                        self.player.update()
+
+                    for enemy in self.enemies:
+                        if not self.game_manager.floor_collide(enemy):
+                            enemy.update() #update enemies' position
                     '''
                     #Update
                     self.player.update() #update player's position
@@ -61,6 +78,12 @@ class Game:
 
             #Render
             self.display.fill("white")
+            self.player.render(self.display)
+            for enemy in self.enemies:
+                enemy.render(self.display)
+
+            for floor in self.floor.values():
+                floor.render(self.display)
             '''
             self.player.render(self.display)
             self.enemies.render(self.display)
@@ -72,7 +95,13 @@ class Game:
 
 if __name__=="__main__":
     pygame.init()
-    g = Game()
+
+    floor = Floor(SCALE)
+    floor_dic = dict()
+    for x in range(1,WIDTH):
+        floor_dic[(x,HEIGHT-2)] = floor.clone(x,HEIGHT-2)
+
+    g = Game(floor_dic)
     g.loop()
 
     pygame.quit()
