@@ -82,8 +82,8 @@ class Game:
             for enemy in self.enemies:
                 enemy.render(self.display)
 
-            for floor in self.floor.values():
-                floor.render(self.display)
+            for pos in self.floor.keys():
+                self.floor.get(pos).render(self.display, pos[0], pos[1])
             '''
             self.player.render(self.display)
             self.enemies.render(self.display)
@@ -97,9 +97,10 @@ if __name__=="__main__":
     pygame.init()
 
     floor = Floor(SCALE)
+
     floor_dic = dict()
     for x in range(1,WIDTH):
-        floor_dic[(x,HEIGHT-2)] = floor.clone(x,HEIGHT-2)
+        floor_dic[(x,HEIGHT-2)] = floor
 
     g = Game(floor_dic)
     g.loop()

@@ -35,13 +35,13 @@ class Player(Observable):
 
     def on_notify(self, entity, event):
         #awaiting certain events
-        if entity== self:
+        if entity == self:
             if event == "on_floor":
                 #when player on the ground allow jumping again
                 self._jumping = True
             else:
                 self._jumping = False
-                
+
             if event == "on_ladder":
                 self._has_ladder = True
             else:
