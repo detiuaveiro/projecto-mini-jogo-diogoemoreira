@@ -18,17 +18,19 @@ class Player(Observable):
         
     def down(self):
         #needs to confirm if there is a ladder
-        self.y += 1
+        if self._has_ladder and not self._jumping:
+            self.y += 1
     def left(self):
         self.x -= 1
     def right(self):
         self.x += 1
     def jump(self):
-        if self._jumping:
+        if self._jumping and not self._has_ladder:
             self.y -= 5
 
     def update(self):
-        self.y += 1
+        if not self._has_ladder:
+            self.y += 1
     
     def render(self, display):
         pygame.draw.rect(display, "blue", (self.scale*self.x, self.scale*self.y, self.scale, self.scale))
@@ -39,10 +41,11 @@ class Player(Observable):
             if event == "on_floor":
                 #when player on the ground allow jumping again
                 self._jumping = True
-            else:
+            if event == "no_floor":
                 self._jumping = False
 
             if event == "on_ladder":
                 self._has_ladder = True
-            else:
+            if event == "no_ladder":
                 self._has_ladder = False
+

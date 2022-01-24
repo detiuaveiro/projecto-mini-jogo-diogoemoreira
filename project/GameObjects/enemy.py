@@ -8,12 +8,14 @@ class Enemy:
         return NotImplemented
 
 class Emu(Enemy):
+    #using Prototype pattern
     def __init__(self, scale, x=0, y=0):
         super().__init__()
         self.x, self.y = x, y
         self.sprite = None
         self.enemy_direction = (0, 0)
         self.scale = scale
+        self._has_ladder = False
     
     @property
     def direction(self):
@@ -30,3 +32,11 @@ class Emu(Enemy):
     
     def clone(self, x=0, y=0):
         return Emu(self.scale, x, y)
+    
+    def on_notify(self, entity, event):
+        #awaiting certain events
+        if entity == self:
+            if event == "on_ladder":
+                self._has_ladder = True
+            else:
+                self._has_ladder = False

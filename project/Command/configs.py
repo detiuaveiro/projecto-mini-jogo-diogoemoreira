@@ -2,6 +2,7 @@ import pickle
 from input_handler import *
 
 class Configurations:
+    #not used for now
     def __init__(self):
         self._keys = {
             "w": Up,

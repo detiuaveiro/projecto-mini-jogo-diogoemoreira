@@ -2,6 +2,7 @@ from command import Command
 from configs import Configurations
 
 class Up(Command):
+    #not used for now
     def execute(self, actor):
         actor.up()
 
