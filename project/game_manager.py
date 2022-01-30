@@ -1,3 +1,4 @@
+import string
 from observable import Observable
 
 class GameManager(Observable):
@@ -6,7 +7,7 @@ class GameManager(Observable):
         self.scale = scale
         self.floor = floor
         self.ladders = ladders
-        self.walls = walls
+        self.walls = walls      
 
     def collide(self, a , b):
         #confirm collision between a and b

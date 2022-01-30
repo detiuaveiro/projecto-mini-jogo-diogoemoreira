@@ -1,5 +1,4 @@
 import pygame
-
 class Floor:
     #use flyweight
     def __init__(self, scale):

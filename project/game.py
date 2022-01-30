@@ -4,9 +4,10 @@ from GameObjects.enemy import Emu
 from GameObjects.player import Player
 from GameObjects.floor import Floor
 from GameObjects.ladder import Ladder
-from GameObjects.egg import Egg
-from GameObjects.food import Food
+#from GameObjects.egg import Egg
+#from GameObjects.food import Food
 from game_manager import GameManager
+from map import Map
 
 
 UPDATE = pygame.event.custom_type()
@@ -61,21 +62,22 @@ class Game:
 
             #confirm if the characters already have floor beneath them
             #if they have, dont update their gravity
+            self.game_manager.on_ladder(self.player) #confirm if the player has ladders
             if self.game_manager.walls_collide(self.player):
                 running=False
             elif not self.game_manager.floor_collide(self.player):
                 self.player.update() #gravity update
-            self.game_manager.on_ladder(self.player) #confirm if the player has ladders
 
             for enemy in self.enemies:
+                self.game_manager.on_ladder(enemy)
                 if not self.game_manager.floor_collide(enemy):
                     enemy.update() #gravity update
                 if self.game_manager.collide(self.player, enemy):
                     running=False
-                self.game_manager.on_ladder(enemy)
 
             ## RENDER
             self.display.fill("white")
+            
             for pos in self.floor.keys():
                 self.floor.get(pos).render(self.display, pos[0], pos[1])
             for pos in self.ladder.keys():
@@ -97,19 +99,8 @@ if __name__=="__main__":
     pygame.init()
 
     #generate map
-    floor = Floor(SCALE)
-    ladder = Ladder(SCALE)
-
-    floor_dic = dict()
-    ladder_dic = dict()
+    map = Map(SCALE)
     walls = set()
-
-    #floor
-    for x in range(0,WIDTH):
-        floor_dic[(x,HEIGHT-2)] = floor
-    #ladders
-    for y in range(0,HEIGHT-2):
-        ladder_dic[(WIDTH-2, y)] = ladder
     #Walls
     for x in range(0,WIDTH):
         walls.add((x,0))
@@ -119,7 +110,7 @@ if __name__=="__main__":
         walls.add((WIDTH,y))
     #
 
-    g = Game(walls, floor_dic, ladder_dic)
+    g = Game(walls, map.floor_dic, map.ladder_dic)
     g.loop()
 
     pygame.quit()
