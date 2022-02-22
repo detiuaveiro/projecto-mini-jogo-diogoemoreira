@@ -8,6 +8,7 @@ class Player(Observable):
         self.scale = scale
         self.x, self.y = 10, height-10
         self._jumping = True
+        self._jumped = False
         self._has_ladder = False
         self.sprite = None
     
@@ -26,11 +27,15 @@ class Player(Observable):
         self.x += 1
     def jump(self):
         if self._jumping and not self._has_ladder:
+            self._jumped = True
             self.y -= 5
 
     def update(self):
         if not self._has_ladder:
-            self.y += 1
+            if self._jumped:
+                self._jumped=False
+            else:
+                self.y += 1
     
     def render(self, display):
         pygame.draw.rect(display, "blue", (self.scale*self.x, self.scale*self.y, self.scale, self.scale))

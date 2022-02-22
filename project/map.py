@@ -15,6 +15,7 @@ class Map:
 
         self.floor_dic = dict()
         self.ladder_dic = dict()
+        self.walkable_tiles_dic = dict()
 
         tiles = {"-": floor,"e": ladder}
 
@@ -27,10 +28,11 @@ class Map:
                 for c in line.rstrip():
                     tile = tiles.get(c)
                     if c:
-                        print(isinstance(tile, Floor))
                         if isinstance(tile, Floor):
                             self.floor_dic[(x,y)] = floor
-                        if isinstance(tile, Ladder):
+                            self.walkable_tiles_dic[(x,y)] = True
+                        elif isinstance(tile, Ladder):
                             self.ladder_dic[(x,y)] = ladder
+                            self.walkable_tiles_dic[(x,y)] = True
                     x+=1
                 y+=1
