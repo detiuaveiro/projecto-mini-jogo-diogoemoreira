@@ -6,4 +6,4 @@ class Floor:
         self.scale = scale
 
     def render(self, display, x, y):
-        pygame.draw.rect(display, "brown", (self.scale*x, self.scale*y, self.scale, self.scale))
+        pygame.draw.rect(display, (131, 76, 66) , (self.scale*x, self.scale*y, self.scale, self.scale))

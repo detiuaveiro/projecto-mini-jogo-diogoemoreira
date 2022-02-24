@@ -21,3 +21,5 @@ There are different ways to accumulate **score**:
 - Food: green squares 🟩  
 - Enemy: red square 🟥  
 - Player: blue square 🟦  
+- Ladders: orange square 🟧  
+- Floor: brown square 🟫  
