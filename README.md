@@ -15,3 +15,9 @@ There are different ways to accumulate **score**:
 - Emu's food  
 - Remaining Time  
 
+## Visual
+
+Eggs: yellow squares
+Food: green squares
+Enemy: red square
+Player: blue square
