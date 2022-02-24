@@ -56,8 +56,8 @@ class Player(Observable):
                 self._has_ladder = False
             
             if event == "on_egg":
-                self.score+= 25
+                self.score+= 50
             
             if event == "on_food":
-                self.score+= 10
+                self.score+= 30
 
