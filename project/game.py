@@ -53,7 +53,7 @@ class Game:
                     running = False
                     break
 
-                elif event.type == pygame.KEYDOWN: #if the player pressed a key
+                elif event.type == pygame.KEYDOWN and time_running: #if the player pressed a key
                     if event.key == pygame.K_SPACE:
                         self.player.jump()
             if time_running:
@@ -111,15 +111,20 @@ class Game:
             for food in self.game_manager.food:
                 self.food.render(self.display, food[0], food[1])
 
-            if not self.game_manager.eggs or time<=0:
+            if not self.game_manager.eggs and time>0:
+                time-=1
+                self.player.score+=1
+                time_running=False
+            
+            if time<=0:
                 time_running=False
             else:
                 t_display = self.font.render("Time: " + str(int(time)), True, (0,0,0))
             
-            self.display.blit(t_display, (60*SCALE, SCALE))
+            self.display.blit(t_display, (57*SCALE, SCALE))
             
             score = self.font.render("Score: " + str(self.player.score), True, (0,0,0))
-            self.display.blit(score, (70*SCALE, SCALE))
+            self.display.blit(score, (68*SCALE, SCALE))
 
             pygame.display.flip()
 
