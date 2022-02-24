@@ -1,17 +1,87 @@
 import pygame
 
-from observable import Observable
+from observer import Observer
 
-class Player(Observable):
+class Player(Observer):
+    '''
+    Player class uses singleton pattern and observer to wait for events: 
+    standing/not standing on floor/ladder and catching food/egg
+    
+    Attributes
+    ---
+    __instance
+        Instance of the object
+    x
+        Horizontal position on the screen
+    
+    y
+        Vertical position on the screen
+    
+    scale
+        Scale used for the screen
+    
+    _jumping
+        Boolean used to know if the object can jump
+    
+    _jumped
+        Boolean used to know if the object is currently jumping
+    
+    has_ladder
+        Boolean used to know if the object is standing on a ladder
+    
+    score
+        Players score
+    ---
+
+    Methods
+    ---
+    getInstance()
+        If the object was already created, returns its instance
+    
+    up()
+        If _has_ladder is true decrements y attribute
+    down()
+        If _has_ladder is true and self._jumping is false Increments y attribute
+    left()
+        Decrements x attribute
+    right()
+        Increments x attribute
+
+    jump()
+        If not already on a jump and not on a ladder, decreases y by 5 (jumps) and updates _jumped to true 
+
+    update()
+        If not on a ladder increments y (gravity)
+
+    render(display)
+        Draws an image of the object on the display with a position of (x,y)
+
+    on_notify(entity, event)
+        receives events happening to the entity
+    ---
+    '''
+    __instance = None
+
     def __init__(self, scale, height, width):
-        super().__init__()
-        self.scale = scale
-        self.x, self.y = 10, height-10
-        self._jumping = True
-        self._jumped = False
-        self._has_ladder = False
-        self.sprite = None
-        self.score = 0
+        if Player.__instance!=None:
+            raise Exception("This class is a singleton and its instance is already created!")
+        else:
+            super().__init__()
+            self.x, self.y = 10, height-10
+            self.scale = scale
+            self._jumping = True
+            self._jumped = False
+            self._has_ladder = False
+            self.score = 0
+            __instance=self
+    
+    @staticmethod
+    def getInstance():
+        if Player.__instance==None:
+            raise Exception("Singleton class was never instantiated!")
+        else:
+            return Player.__instance
+        
     
     def up(self):
         #needs to confirm if there is a ladder

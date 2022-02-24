@@ -1,6 +1,24 @@
 from observer import Observer
 
 class Observable:
+    '''
+    Parent class for Observable objects, using observer pattern
+
+    Attributes
+    ---
+    observers
+        list of observers to notify
+    ---
+
+    Methods
+    ---
+    add_observer(callback)
+        add callback to the list of observers
+    
+    notify(entity, event)
+        notify all observers of the event happening for the entity
+    ---
+    '''
 
     def __init__(self):
         self._observers=[]

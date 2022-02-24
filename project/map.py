@@ -6,10 +6,39 @@ from GameObjects.ladder import Ladder
 
 
 class Map:
+    '''
+    Reads a file to create the map where the game will be player.
+    Map is read from text file so it is editable and repeatable
+
+    Attributes
+    ---
+    level
+        File name with the level
+
+    floor_dic
+        Dictionary with the the positions of floor tiles as keys
+
+    ladder_dic
+        Dictionary with the the positions of ladder tiles as keys
+    
+    egg_dic
+        Dictionary with the the positions of egg objects as keys
+    
+    food_dic
+        Dictionary with the the positions of food objects as keys
+    
+    walkable_tiles_dic
+        Dictionary with the the positions of walkable tiles as keys, floor and ladder tiles
+    ---
+
+    Methods
+    ---
+
+    ---
+    '''
     """Representation of a Map."""
 
     def __init__(self, SCALE, filename="level1.txt"):
-        self._map = dict()
         self._level = filename
 
         #generate map

@@ -6,6 +6,7 @@ from GameObjects.food import Food
 from GameObjects.player import Player
 from GameObjects.floor import Floor
 from GameObjects.ladder import Ladder
+from GameObjects.spawner import Spawner
 #from GameObjects.egg import Egg
 #from GameObjects.food import Food
 from game_manager import GameManager
@@ -18,6 +19,9 @@ HEIGHT = 40
 WIDTH = 80
 
 class Game:
+    '''
+    A class that handles the game itself, this is where the necessary calls to each game object are made
+    '''
     def __init__(self, walls:dict, map:Map):
         self.display = pygame.display.set_mode((SCALE * WIDTH, SCALE * HEIGHT)) #create the display for the game
         self.clock = pygame.time.Clock() #start counting for game frames      #self.command = InputHandler()
@@ -27,14 +31,17 @@ class Game:
         self.map = map
         self.floor = map.floor_dic
         self.ladder = map.ladder_dic
-        self.player = Player(SCALE, HEIGHT, WIDTH)
-        self.enemy = Emu(SCALE)
         self.egg = Egg(SCALE)
         self.food = Food(SCALE)
-        self.enemies = []
-        self.enemies.append(self.enemy.clone(self.enemy.x + 2, self.enemy.y + 1))
+
+        self.player = Player(SCALE, HEIGHT, WIDTH)
+        enemy = Emu(SCALE)
         
-        self.game_manager = GameManager(SCALE, self.floor, self.ladder, walls, map.egg_dic, map.food_dic) #change dict to the ladder dictionary
+        self.enemies = []
+        self.spawner = Spawner()
+        self.enemies.append(self.spawner.spawn_monster(enemy, 2, 1))
+        
+        self.game_manager = GameManager(self.floor, self.ladder, walls, map.egg_dic, map.food_dic) #change dict to the ladder dictionary
 
         for enemy in self.enemies:
             self.game_manager.add_observer(enemy)
@@ -73,8 +80,8 @@ class Game:
 
                 #confirm if the characters already have floor beneath them
                 #if they have, dont update their gravity
-                self.game_manager.other_collision(self.player) #confirm if the player has ladders
-                self.game_manager.egg_collision(self.player) #confirm if the player has ladders
+                self.game_manager.others_collide(self.player) #confirm if the player has ladders
+                self.game_manager.egg_collide(self.player) #confirm if the player has ladders
 
                 if self.game_manager.walls_collide(self.player):
                     running=False
@@ -83,7 +90,7 @@ class Game:
                 
                 #enemies
                 for enemy in self.enemies:
-                    self.game_manager.other_collision(enemy)
+                    self.game_manager.others_collide(enemy)
                     if self.game_manager.walls_collide(enemy):
                         enemy.emuAI.wall_collision()
 

@@ -2,28 +2,73 @@ from random import randrange
 import pygame
 
 from map import Map
+from observer import Observer
 
-class Enemy:
+class Enemy(Observer):
+    '''
+    A parent class for prototype pattern which inherits from observer
+
+    Methods
+    ---
+    clone(self, x,y)
+        Creates another object by copying this protoype
+    ---
+    '''
     def __init__(self):
         pass
     
-    def clone(self):
+    def clone(self, x=0, y=0):
         return NotImplemented
 
 class Emu(Enemy):
-    #using Prototype pattern
+    '''
+    Inherits from Enemy class, using pattern prototype and observer to wait for events: 
+    eating food and standing on a ladder
+
+    Attributes
+    ---
+    x
+        Horizontal position on the screen
+    
+    y
+        Vertical position on the screen
+    
+    scale
+        Scale used for the screen
+    
+    has_ladder
+        Boolean used to know if the object is standing on a ladder
+    
+    stop_timer
+        Integer used to stop the object when he eats food
+    
+    emuAI
+        Artificial Intelligence used for this object
+    ---
+
+    Methods
+    ---
+    update(map, fall)
+        Calls the AI for the next move to udpdate position and if falling also updates its position.
+        If the attribute stop_timer is different from 0 does not update its position and instead decrements stop_timer
+    
+    render(display)
+        Draws an image of the object on the display with a position of (x,y)
+    
+    clone(x, y)
+        returns a clone of the object in the position x and y
+    
+    on_notify(entity, event)
+        receives events happening to the entity
+    ---
+    '''
     def __init__(self, scale, x=0, y=0):
         super().__init__()
         self.x, self.y = x, y
-        self.sprite = None
         self.scale = scale
         self._has_ladder = False
         self.stop_timer = 0
         self.emuAI = EmuAI(self)
-    
-    @property
-    def direction(self):
-        return self.enemy_direction
     
     def update(self, map, fall=True):
         #make it patrol certain positions
@@ -52,6 +97,42 @@ class Emu(Enemy):
                 self.stop_timer=15
 
 class EmuAI():
+    '''
+    Artificial Intelligence for Emu class
+
+    Attributes
+    ---
+    _emu
+        Object for which the AI is calculating the next movement
+    
+    _move_horizontal
+        Integer used to know where the object is moving horizontally, -1: object is moving left, 1: object is moving right
+    
+    _move_vertical
+        Integer used to know where the object is moving vertically, -1: object is moving up, 1: object is moving down
+    
+    _ladder
+        Boolean to decide if the object is on a ladder
+    
+    _r
+        Integer used to decide if the object will go up or down the ladder
+    
+    _rand_ladder
+        Integer for randomizing the objects movements
+    ---
+
+    Methods
+    ---
+    next_move(map)
+        Decides the next movement for the object confirming possible moves
+    
+    climb_ladder(map)
+        Decides the move of the object if he is standing on a ladder
+    
+    wall_collision()
+        If the object would collide with a wall he changes his direction
+    ---
+    '''
     def __init__(self, emu:Emu) -> None:
         self._emu = emu
         self._move_horizontal = 1  # -1: emu is moving left, 1: emu is moving right
