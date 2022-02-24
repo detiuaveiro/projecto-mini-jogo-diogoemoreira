@@ -1,4 +1,7 @@
+from tkinter import Scale
+from GameObjects.egg import Egg
 from GameObjects.floor import Floor
+from GameObjects.food import Food
 from GameObjects.ladder import Ladder
 
 
@@ -12,12 +15,16 @@ class Map:
         #generate map
         floor = Floor(SCALE)
         ladder = Ladder(SCALE)
+        egg = Egg(SCALE)
+        food = Food(SCALE)
 
         self.floor_dic = dict()
         self.ladder_dic = dict()
+        self.egg_dic = dict()
+        self.food_dic = dict()
         self.walkable_tiles_dic = dict()
 
-        tiles = {"-": floor,"e": ladder}
+        tiles = {"-": floor,"e": ladder, "o": egg, "f": food}
 
         x,y = 0,0
 
@@ -34,5 +41,9 @@ class Map:
                         elif isinstance(tile, Ladder):
                             self.ladder_dic[(x,y)] = ladder
                             self.walkable_tiles_dic[(x,y)] = True
+                        elif isinstance(tile, Egg):
+                            self.egg_dic[(x,y)] = egg
+                        elif isinstance(tile, Food):
+                            self.food_dic[(x,y)] = food
                     x+=1
                 y+=1

@@ -16,21 +16,23 @@ class Emu(Enemy):
         super().__init__()
         self.x, self.y = x, y
         self.sprite = None
-        self.enemy_direction = (0, 0)
         self.scale = scale
         self._has_ladder = False
+        self.stop_timer = 0
         self.emuAI = EmuAI(self)
     
     @property
     def direction(self):
         return self.enemy_direction
     
-    def update(self):
+    def update(self, map, fall=True):
         #make it patrol certain positions
-        self.x += self.enemy_direction[0]
-        self.y += self.enemy_direction[1]
-        if not self._has_ladder:
-            self.y += 1
+        if self.stop_timer==0:
+            self.emuAI.next_move(map)
+            if fall and not self._has_ladder:
+                self.y += 1
+        else:
+            self.stop_timer-=1
 
     def render(self, display):
         pygame.draw.rect(display, "red", (self.scale*self.x, self.scale*self.y, self.scale, self.scale))
@@ -45,6 +47,9 @@ class Emu(Enemy):
                 self._has_ladder = True
             if event == "no_ladder":
                 self._has_ladder = False
+            
+            if event == "on_food":
+                self.stop_timer=15
 
 class EmuAI():
     def __init__(self, emu:Emu) -> None:

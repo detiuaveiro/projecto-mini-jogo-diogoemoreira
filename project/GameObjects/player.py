@@ -11,6 +11,7 @@ class Player(Observable):
         self._jumped = False
         self._has_ladder = False
         self.sprite = None
+        self.score = 0
     
     def up(self):
         #needs to confirm if there is a ladder
@@ -53,4 +54,10 @@ class Player(Observable):
                 self._has_ladder = True
             if event == "no_ladder":
                 self._has_ladder = False
+            
+            if event == "on_egg":
+                self.score+= 25
+            
+            if event == "on_food":
+                self.score+= 10
 
