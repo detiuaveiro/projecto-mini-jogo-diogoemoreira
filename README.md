@@ -17,7 +17,7 @@ There are different ways to accumulate **score**:
 
 ## Visual
 
-Eggs: yellow squares
-Food: green squares
-Enemy: red square
-Player: blue square
+- Eggs: yellow squares 🟨  
+- Food: green squares 🟩  
+- Enemy: red square 🟥  
+- Player: blue square 🟦  
