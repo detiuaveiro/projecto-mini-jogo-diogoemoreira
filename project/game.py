@@ -21,6 +21,8 @@ class Game:
     def __init__(self, walls:dict, map:Map):
         self.display = pygame.display.set_mode((SCALE * WIDTH, SCALE * HEIGHT)) #create the display for the game
         self.clock = pygame.time.Clock() #start counting for game frames      #self.command = InputHandler()
+       
+        self.font = pygame.font.Font('freesansbold.ttf', 20)
 
         self.map = map
         self.floor = map.floor_dic
@@ -40,6 +42,8 @@ class Game:
 
     def loop(self):
         running = True
+        time_running=True
+        time=300
 
         #Event handler
         while running:
@@ -52,42 +56,44 @@ class Game:
                 elif event.type == pygame.KEYDOWN: #if the player pressed a key
                     if event.key == pygame.K_SPACE:
                         self.player.jump()
+            if time_running:
                 
-            keys = pygame.key.get_pressed()    
-            if keys[pygame.K_UP]:
-                self.player.up()
-            elif keys[pygame.K_DOWN]:
-                self.player.down()
-            if keys[pygame.K_LEFT]:
-                self.player.left()
-            elif keys[pygame.K_RIGHT]:
-                self.player.right()
+                time-= 66.6/1000                    
+                keys = pygame.key.get_pressed()    
+                if keys[pygame.K_UP]:
+                    self.player.up()
+                elif keys[pygame.K_DOWN]:
+                    self.player.down()
+                if keys[pygame.K_LEFT]:
+                    self.player.left()
+                elif keys[pygame.K_RIGHT]:
+                    self.player.right()
 
-            ## COLLISIONS
+                ## COLLISIONS
 
-            #confirm if the characters already have floor beneath them
-            #if they have, dont update their gravity
-            self.game_manager.other_collision(self.player) #confirm if the player has ladders
-            self.game_manager.egg_collision(self.player) #confirm if the player has ladders
+                #confirm if the characters already have floor beneath them
+                #if they have, dont update their gravity
+                self.game_manager.other_collision(self.player) #confirm if the player has ladders
+                self.game_manager.egg_collision(self.player) #confirm if the player has ladders
 
-            if self.game_manager.walls_collide(self.player):
-                running=False
-            elif not self.game_manager.floor_collide(self.player):
-                self.player.update() #gravity update
-            
-            #enemies
-            for enemy in self.enemies:
-                self.game_manager.other_collision(enemy)
-                if self.game_manager.walls_collide(enemy):
-                    enemy.emuAI.wall_collision()
-
-                if self.game_manager.floor_collide(enemy):
-                    enemy.update(self.map, False)  
-                else:
-                    enemy.update(self.map) #gravity update
-
-                if self.game_manager.collide(self.player, enemy):
+                if self.game_manager.walls_collide(self.player):
                     running=False
+                elif not self.game_manager.floor_collide(self.player):
+                    self.player.update() #gravity update
+                
+                #enemies
+                for enemy in self.enemies:
+                    self.game_manager.other_collision(enemy)
+                    if self.game_manager.walls_collide(enemy):
+                        enemy.emuAI.wall_collision()
+
+                    if self.game_manager.floor_collide(enemy):
+                        enemy.update(self.map, False)  
+                    else:
+                        enemy.update(self.map) #gravity update
+
+                    if self.game_manager.collide(self.player, enemy):
+                        running=False
 
             ## RENDER
             self.display.fill("white")
@@ -104,6 +110,16 @@ class Game:
                 self.egg.render(self.display, egg[0], egg[1])
             for food in self.game_manager.food:
                 self.food.render(self.display, food[0], food[1])
+
+            if not self.game_manager.eggs or time<=0:
+                time_running=False
+            else:
+                t_display = self.font.render("Time: " + str(int(time)), True, (0,0,0))
+            
+            self.display.blit(t_display, (60*SCALE, SCALE))
+            
+            score = self.font.render("Score: " + str(self.player.score), True, (0,0,0))
+            self.display.blit(score, (70*SCALE, SCALE))
 
             pygame.display.flip()
 
