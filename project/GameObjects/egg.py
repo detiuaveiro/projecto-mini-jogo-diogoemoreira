@@ -20,4 +20,4 @@ class Egg:
         self.scale = scale
 
     def render(self, display, x, y):
-        pygame.draw.rect(display, "yellow", (self.scale*x, self.scale*y, self.scale, self.scale))
+        pygame.draw.rect(display, 	(255,215,0), (self.scale*x, self.scale*y, self.scale, self.scale))
